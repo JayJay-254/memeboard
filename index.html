@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMEBOARD</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <img src="https://assets.website-files.com/62f689e49c7161b3260c1d68/63065e89a502e6040d2f0945_memeboard-logo.svg" alt="">
+            <h1>MEMEBOARD</h1>
+        </div>
+        <div class="search-bar">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search memes...">
+        </div>
+        <div class="nav-icons">
+            <span class="material-icons settings-icon">settings</span>
+            <div class="user-profile">
+                <span class="material-icons profile-avatar">person</span>
+                <span class="username"></span>
+                <button class="sign-in-btn">Sign In</button> <span class="material-icons notification-icon">notifications</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="inspiration-card">
+            <div class="bulb-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="60px" height="60px">
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19c-3.87 0-7 3.13-7 7 0 3.29 2.1 6.09 5 6.91V17h4v-.09c2.9-.82 5-3.62 5-6.91 0-3.87-3.13-7-7-7zm2.85 11.23L13 14h-2l-.85-1.77C8.75 11.66 8 10.39 8 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.39-.75 2.66-2.15 3.23z"/>
+                </svg>
+            </div>
+            <div class="quote-box">
+                <p>"Programs are meant to be read by humans, and only incidentally for machines to execute."</p>
+            </div>
+        </section>
+
+        <section class="post-meme-card">
+            <div class="card-header">
+                <span class="material-icons green-dot">fiber_manual_record</span>
+                <h3>Post a Meme</h3>
+            </div>
+            <div class="post-input-area">
+                <input type="text" id="meme-title" placeholder="Meme title..." class="text-input">
+                <textarea id="meme-description" placeholder="Meme description (optional)..." class="text-input"></textarea>
+
+                <div class="post-type-selector">
+                    <button class="type-btn active" id="url-btn">
+                        <span class="material-icons">link</span> URL
+                    </button>
+                    <button class="type-btn" id="upload-btn">
+                        <span class="material-icons">upload_file</span> Upload
+                    </button>
+                    <button class="type-btn" id="text-btn">
+                        <span class="material-icons">text_fields</span> Text
+                    </button>
+                </div>
+                
+                <div id="url-input" class="input-field-group active">
+                    <input type="text" placeholder="Enter image URL..." class="text-input">
+                </div>
+                <div id="upload-input" class="input-field-group">
+                    <input type="file" id="image-upload" accept="image/*">
+                </div>
+                 <div id="text-input" class="input-field-group">
+                    <textarea placeholder="Write your text post here..." class="text-input"></textarea>
+                </div>
+
+                <button class="post-meme-btn">Post Meme</button>
+            </div>
+             <div class="active-status">
+                <span class="dot"></span> Active
+            </div>
+        </section>
+        
+        <section id="feed-container">
+            <h2>Feed</h2>
+            </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
