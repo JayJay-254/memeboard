@@ -1,492 +1,312 @@
-/* --- Global Styles & Dark Theme --- */
-:root {
-    --primary-bg: #1a1e26; /* Dark background */
-    --secondary-bg: #272c36; /* Slightly lighter dark for cards */
-    --accent-blue: #6c63ff; /* Purple-blue accent */
-    --text-light: #e0e0e0;
-    --text-medium: #a0a0a0;
-    --border-dark: #3a3f4a;
-    --green-dot: #4caf50;
-    --red-dot: #f44336;
-    --button-hover: #5a50e0;
-}
+* --- Global Styles & Dark Theme --- */
+        :root {
+            --primary-bg: #1a1e26;
+            --secondary-bg: #272c36;
+            --accent-blue: #6c63ff;
+            --text-light: #e0e0e0;
+            --text-medium: #a0a0a0;
+            --border-dark: #3a3f4a;
+            --green-dot: #4caf50;
+            --red-dot: #f44336;
+            --button-hover: #5a50e0;
+        }
 
-body {
-    font-family: 'Inter', sans-serif; /* A modern font like Inter or Poppins would match */
-    background-color: var(--primary-bg);
-    color: var(--text-light);
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* --- Navbar (Header) --- */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background-color: var(--secondary-bg);
-    border-bottom: 1px solid var(--border-dark);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
+        /* --- Navbar (Header) --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-dark);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-.logo img {
-    height: 30px; /* Adjust as needed */
-}
+        .logo img { height: 30px; }
+        .logo h1 { font-size: 24px; font-weight: 700; color: var(--text-light); margin: 0; }
 
-.logo h1 {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text-light);
-    margin: 0;
-}
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--primary-bg);
+            border-radius: 8px;
+            padding: 8px 15px;
+            flex-grow: 0.4;
+            max-width: 400px;
+        }
 
-.search-bar {
-    display: flex;
-    align-items: center;
-    background-color: var(--primary-bg);
-    border-radius: 8px;
-    padding: 8px 15px;
-    flex-grow: 0.4; /* Give it some flexibility */
-    max-width: 400px;
-}
+        .search-bar .material-icons { color: var(--text-medium); margin-right: 10px; font-size: 20px; }
+        .search-bar input { background: none; border: none; color: var(--text-light); width: 100%; font-size: 16px; outline: none; }
+        .search-bar input::placeholder { color: var(--text-medium); }
 
-.search-bar .material-icons {
-    color: var(--text-medium);
-    margin-right: 10px;
-    font-size: 20px;
-}
+        .nav-icons { display: flex; align-items: center; gap: 20px; }
+        .nav-icons .material-icons { color: var(--text-medium); font-size: 24px; cursor: pointer; }
 
-.search-bar input {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    width: 100%;
-    font-size: 16px;
-    outline: none;
-}
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .user-profile img { width: 35px; height: 35px; border-radius: 50%; }
+        .user-profile .username { font-weight: 600; color: var(--text-light); }
 
-.search-bar input::placeholder {
-    color: var(--text-medium);
-}
+        .action-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .action-btn:hover { background-color: var(--button-hover); }
+        .sign-out-btn { background-color: var(--border-dark); }
+        .sign-out-btn:hover { background-color: var(--red-dot); }
 
-.nav-icons {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+        /* --- Auth Wall (Logged Out State) --- */
+        #auth-wall {
+            display: flex; /* Shown by JS */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px;
+            height: 70vh;
+        }
+        #auth-wall h2 { font-size: 28px; color: var(--text-light); }
+        #auth-wall p { font-size: 18px; color: var(--text-medium); margin-bottom: 30px; }
+        #auth-wall-signin-btn { padding: 15px 30px; font-size: 20px; }
+        
+        /* --- Main App Content (Logged In State) --- */
+        #app-content {
+            display: none; /* Hidden by default, shown by JS when authed */
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
 
-.nav-icons .material-icons {
-    color: var(--text-medium);
-    font-size: 24px;
-    cursor: pointer;
-}
+        /* --- Inspiration Card --- */
+        .inspiration-card {
+            background-color: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .bulb-icon {
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .bulb-icon svg { color: white; width: 60px; height: 60px; }
+        .quote-box {
+            background-color: var(--primary-bg);
+            border-radius: 8px;
+            padding: 20px 30px;
+            border-left: 5px solid var(--accent-blue);
+            max-width: 500px;
+        }
+        .quote-box p { font-style: italic; font-size: 18px; line-height: 1.5; color: var(--text-light); margin: 0; }
 
-/* .nav-icons .settings-icon {
-    /* Specific styling for settings if needed */
+        /* --- Post a Meme Card --- */
+        .post-meme-card {
+            background-color: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .post-meme-card .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .green-dot { color: var(--green-dot); font-size: 20px !important; }
+        .post-meme-card h3 { margin: 0; color: var(--text-light); font-size: 20px; }
 
+        .post-input-area { display: flex; flex-direction: column; gap: 15px; }
+        .text-input {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 16px;
+            outline: none;
+            resize: vertical;
+        }
+        .text-input::placeholder { color: var(--text-medium); }
 
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative; /* For the notification icon */
-}
+        .post-type-selector { display: flex; gap: 10px; margin-top: 10px; }
+        .type-btn {
+            flex-grow: 1;
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-dark);
+            color: var(--text-medium);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .type-btn:hover:not(.active) { background-color: #3a3f4a; color: var(--text-light); }
+        .type-btn.active { background-color: var(--accent-blue); border-color: var(--accent-blue); color: white; }
+        .type-btn.active .material-icons { color: white; }
 
-.profile-avatar {
-    background-color: var(--accent-blue);
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white; /* Icon inside avatar */
-    font-size: 20px !important;
-}
+        .input-field-group { display: none; width: 100%; }
+        .input-field-group.active { display: block; }
 
-.username {
-    font-weight: 600;
-    color: var(--text-light);
-    margin-right: 10px;
-}
+        .post-meme-btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: background-color 0.2s ease;
+        }
+        .post-meme-btn:hover { background-color: var(--button-hover); }
+        .post-meme-btn:disabled { background-color: var(--text-medium); cursor: not-allowed; }
 
-.sign-in-btn {
-    background-color: var(--accent-blue);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
-}
+        /* --- Feed Container (for posts) --- */
+        #feed-container { margin-top: 30px; }
+        #feed-container h2 { color: var(--text-light); font-size: 24px; margin-bottom: 20px; }
 
-.sign-in-btn:hover {
-    background-color: var(--button-hover);
-}
+        .post {
+            background-color: var(--secondary-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            padding: 20px;
+            color: var(--text-light);
+        }
 
-.notification-icon {
-    background-color: var(--red-dot); /* Red circle for notification */
-    color: white;
-    border-radius: 50%;
-    font-size: 18px !important;
-    width: 25px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    right: -10px; /* Position relative to user-profile */
-    top: -5px;
-    border: 2px solid var(--secondary-bg); /* Border matching navbar background */
-}
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            position: relative; /* For delete button */
+        }
+        .post-header .profile-avatar { width: 40px; height: 40px; border-radius: 50%; }
+        .post-author { font-weight: 600; font-size: 17px; color: var(--text-light); }
+        .post-time { font-size: 14px; color: var(--text-medium); }
 
-/* --- Main Content Area --- */
-main {
-    max-width: 900px; /* Wider main content */
-    margin: 20px auto;
-    padding: 0 15px;
-}
+        .delete-post-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: none;
+            border: none;
+            color: var(--text-medium);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+        }
+        .delete-post-btn:hover { background-color: var(--primary-bg); color: var(--red-dot); }
+        .delete-post-btn.visible { display: block; } /* Shown by JS */
 
-/* --- Inspiration Card --- */
-.inspiration-card {
-    background-color: var(--secondary-bg);
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
+        .post-content h4 { margin: 0 0 10px 0; font-size: 18px; color: var(--text-light); }
+        .post-content p { margin: 0 0 15px 0; line-height: 1.6; color: var(--text-light); word-break: break-word; }
+        .post-content img { max-width: 100%; border-radius: 8px; margin-bottom: 15px; display: block; }
 
-.bulb-icon {
-    background-color: var(--accent-blue);
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        .post-footer {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-dark);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        .post-footer button {
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-medium);
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .post-footer button .material-icons { font-size: 20px; transition: all 0.2s ease; }
+        .post-footer button:hover { background-color: var(--primary-bg); color: var(--text-light); }
+        .post-footer button:hover .material-icons { color: var(--text-light); }
+        .post-footer button.liked { color: var(--accent-blue); }
+        .post-footer button.liked .material-icons { color: var(--accent-blue); transform: scale(1.1); }
 
-.bulb-icon svg {
-    color: white;
-    width: 60px;
-    height: 60px;
-}
+        /* --- Custom Modal for Alerts/Confirmations --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: var(--secondary-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal-content h4 { margin-top: 0; font-size: 20px; color: var(--text-light); }
+        .modal-content p { color: var(--text-medium); margin-bottom: 20px; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .modal-btn { padding: 10px 20px; }
+        .modal-btn-confirm { background-color: var(--red-dot); }
+        .modal-btn-confirm:hover { background-color: #d32f2f; }
+        .modal-btn-cancel { background-color: var(--border-dark); }
+        .modal-btn-cancel:hover { background-color: #4a4f5a; }
 
-.quote-box {
-    background-color: var(--primary-bg); /* Darker background for the quote */
-    border-radius: 8px;
-    padding: 20px 30px;
-    border-left: 5px solid var(--accent-blue);
-    max-width: 500px;
-}
-
-.quote-box p {
-    font-style: italic;
-    font-size: 18px;
-    line-height: 1.5;
-    color: var(--text-light);
-    margin: 0;
-}
-
-/* --- Post a Meme Card --- */
-.post-meme-card {
-    background-color: var(--secondary-bg);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    position: relative; /* For the active status dot */
-}
-
-.post-meme-card .card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.green-dot {
-    color: var(--green-dot);
-    font-size: 20px !important;
-}
-
-.post-meme-card h3 {
-    margin: 0;
-    color: var(--text-light);
-    font-size: 20px;
-}
-
-.post-input-area {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.text-input {
-    width: calc(100% - 20px); /* Account for padding */
-    padding: 12px 10px;
-    background-color: var(--primary-bg);
-    border: 1px solid var(--border-dark);
-    border-radius: 8px;
-    color: var(--text-light);
-    font-size: 16px;
-    outline: none;
-    resize: vertical; /* Allow vertical resize for textareas */
-}
-
-.text-input::placeholder {
-    color: var(--text-medium);
-}
-
-.post-type-selector {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.type-btn {
-    flex-grow: 1;
-    background-color: var(--primary-bg);
-    border: 1px solid var(--border-dark);
-    color: var(--text-medium);
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-}
-
-.type-btn:hover:not(.active) {
-    background-color: #3a3f4a;
-    color: var(--text-light);
-}
-
-.type-btn.active {
-    background-color: var(--accent-blue);
-    border-color: var(--accent-blue);
-    color: white;
-}
-
-.type-btn.active .material-icons {
-    color: white;
-}
-
-.input-field-group {
-    display: none; /* Hidden by default, JavaScript will show the active one */
-    width: 100%;
-}
-
-.input-field-group.active {
-    display: block; /* Show the active input group */
-}
-
-.post-meme-btn {
-    background-color: var(--accent-blue);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 600;
-    margin-top: 15px;
-    transition: background-color 0.2s ease;
-}
-
-.post-meme-btn:hover {
-    background-color: var(--button-hover);
-}
-
-.active-status {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
-    color: var(--text-medium);
-}
-
-.active-status .dot {
-    width: 10px;
-    height: 10px;
-    background-color: var(--green-dot);
-    border-radius: 50%;
-}
-
-
-/* --- Feed Container (for posts) --- */
-#feed-container {
-    margin-top: 30px;
-}
-
-#feed-container h2 {
-    color: var(--text-light);
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-/* Base Post Card for the Feed */
-.post {
-    background-color: var(--secondary-bg);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    margin-bottom: 20px;
-    padding: 20px;
-    color: var(--text-light);
-}
-
-.post-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.post-header .profile-avatar { /* Reuse avatar style */
-    width: 40px;
-    height: 40px;
-    font-size: 22px !important;
-}
-
-.post-author {
-    font-weight: 600;
-    font-size: 17px;
-    color: var(--text-light);
-}
-
-.post-time {
-    font-size: 14px;
-    color: var(--text-medium);
-}
-
-.post-content h4 { /* For the meme title */
-    margin: 0 0 10px 0;
-    font-size: 18px;
-    color: var(--text-light);
-}
-
-.post-content p {
-    margin: 0 0 15px 0;
-    line-height: 1.6;
-    color: var(--text-light);
-}
-
-.post-content img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    display: block; /* Ensures it doesn't leave extra space below */
-}
-
-.post-footer {
-    display: flex;
-    justify-content: space-around;
-    border-top: 1px solid var(--border-dark);
-    padding-top: 15px;
-    margin-top: 15px;
-}
-
-.post-footer button {
-    background: none;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-medium);
-    cursor: pointer;
-    padding: 10px 15px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.2s ease;
-}
-
-.post-footer button .material-icons {
-    font-size: 20px;
-    color: var(--text-medium);
-}
-
-.post-footer button:hover {
-    background-color: var(--primary-bg);
-    color: var(--text-light);
-}
-
-.post-footer button:hover .material-icons {
-    color: var(--text-light);
-}
-
-/* Active like button state */
-.post-footer button.liked {
-    color: var(--accent-blue);
-}
-
-.post-footer button.liked .material-icons {
-    color: var(--accent-blue);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .navbar {
-        flex-wrap: wrap;
-        padding: 10px 15px;
-    }
-    .search-bar {
-        order: 3; /* Move search below logo/nav icons */
-        flex-basis: 100%;
-        margin-top: 10px;
-    }
-    .nav-icons {
-        gap: 10px;
-    }
-    .user-profile .username {
-        display: none; /* Hide username on small screens */
-    }
-    .user-profile .notification-icon {
-        right: -5px;
-        top: -2px;
-    }
-    main {
-        padding: 0 10px;
-    }
-    .quote-box {
-        padding: 15px 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 20px;
-    }
-    .post-type-selector {
-        flex-direction: column; /* Stack buttons vertically */
-    }
-    .type-btn {
-        width: 100%;
-    }
-    .active-status {
-        position: static; /* Remove absolute positioning */
-        margin-top: 15px;
-        justify-content: flex-end; /* Align right */
-    }
-}
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .navbar { flex-wrap: wrap; padding: 10px 15px; }
+            .search-bar { order: 3; flex-basis: 100%; margin-top: 10px; }
+            .nav-icons { gap: 10px; }
+            .user-profile .username { display: none; }
+            main, #app-content { padding: 0 10px; }
+        }
+        @media (max-width: 480px) {
+            .logo h1 { font-size: 20px; }
+            .post-type-selector { flex-direction: column; }
+        }

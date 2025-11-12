@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEMEBOARD</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+    <title>MEMEBOARD (Auth)</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
 </head>
 <body>
 
+    <!-- Header -->
     <header class="navbar">
         <div class="logo">
-            <img src="https://assets.website-files.com/62f689e49c7161b3260c1d68/63065e89a502e6040d2f0945_memeboard-logo.svg" alt="">
+            <img src="https://assets.website-files.com/62f689e49c7161b3260c1d68/63065e89a502e6040d2f0945_memeboard-logo.svg" alt="MEMEBOARD Logo">
             <h1>MEMEBOARD</h1>
         </div>
         <div class="search-bar">
@@ -21,27 +23,44 @@
         </div>
         <div class="nav-icons">
             <span class="material-icons settings-icon">settings</span>
-            <div class="user-profile">
-                <span class="material-icons profile-avatar">person</span>
-                <span class="username"></span>
-                <button class="sign-in-btn">Sign In</button> <span class="material-icons notification-icon">notifications</span>
+            
+            <!-- This part changes based on Auth State -->
+            <div id="user-profile-guest" class="user-profile">
+                <button id="sign-in-btn" class="action-btn">Sign In</button>
+            </div>
+            <div id="user-profile-authed" class="user-profile" style="display: none;">
+                <img id="user-avatar" src="https://placehold.co/35x35/6c63ff/FFFFFF?text=U" alt="User Avatar">
+                <span id="user-name" class="username">User</span>
+                <button id="sign-out-btn" class="action-btn sign-out-btn">Sign Out</button>
             </div>
         </div>
     </header>
 
-    <main>
+    <!-- Auth Wall (Logged Out) -->
+    <div id="auth-wall">
+        <h2>Welcome to MEMEBOARD</h2>
+        <p>Sign in with your Google account to view, post, and share memes!</p>
+        <button id="auth-wall-signin-btn" class="action-btn">
+            <span class="material-icons" style="margin-right: 8px; vertical-align: middle;">login</span>
+            Sign In with Google
+        </button>
+    </div>
+
+    <!-- Main App (Logged In) -->
+    <main id="app-content">
+        <!-- Inspiration Card -->
         <section class="inspiration-card">
             <div class="bulb-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="60px" height="60px">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19c-3.87 0-7 3.13-7 7 0 3.29 2.1 6.09 5 6.91V17h4v-.09c2.9-.82 5-3.62 5-6.91 0-3.87-3.13-7-7-7zm2.85 11.23L13 14h-2l-.85-1.77C8.75 11.66 8 10.39 8 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.39-.75 2.66-2.15 3.23z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19c-3.87 0-7 3.13-7 7 0 3.29 2.1 6.09 5 6.91V17h4v-.09c2.9-.82 5-3.62 5-6.91 0-3.87-3.13-7-7-7zm2.85 11.23L13 14h-2l-.85-1.77C8.75 11.66 8 10.39 8 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.39-.75 2.66-2.15 3.23z"/>
                 </svg>
             </div>
             <div class="quote-box">
-                <p>"Programs are meant to be read by humans, and only incidentally for machines to execute."</p>
+                <p>"Success is not final, failure is not fatal: it is the courage to continue that counts."</p>
             </div>
         </section>
 
+        <!-- Post a Meme Card -->
         <section class="post-meme-card">
             <div class="card-header">
                 <span class="material-icons green-dot">fiber_manual_record</span>
@@ -52,40 +71,43 @@
                 <textarea id="meme-description" placeholder="Meme description (optional)..." class="text-input"></textarea>
 
                 <div class="post-type-selector">
-                    <button class="type-btn active" id="url-btn">
-                        <span class="material-icons">link</span> URL
-                    </button>
-                    <button class="type-btn" id="upload-btn">
-                        <span class="material-icons">upload_file</span> Upload
-                    </button>
-                    <button class="type-btn" id="text-btn">
-                        <span class="material-icons">text_fields</span> Text
-                    </button>
+                    <button class="type-btn active" id="url-btn"><span class="material-icons">link</span> URL</button>
+                    <button class="type-btn" id="upload-btn"><span class="material-icons">upload_file</span> Upload</button>
+                    <button class="type-btn" id="text-btn"><span class="material-icons">text_fields</span> Text</button>
                 </div>
                 
                 <div id="url-input" class="input-field-group active">
-                    <input type="text" placeholder="Enter image URL..." class="text-input">
+                    <input type="text" id="url-input-field" placeholder="Enter image URL..." class="text-input">
                 </div>
                 <div id="upload-input" class="input-field-group">
-                    <input type="file" id="image-upload" accept="image/*">
+                    <input type="file" id="image-upload-field" class="text-input" accept="image/*">
                 </div>
                  <div id="text-input" class="input-field-group">
-                    <textarea placeholder="Write your text post here..." class="text-input"></textarea>
+                    <textarea id="text-input-field" placeholder="Write your text post here..." class="text-input"></textarea>
                 </div>
 
-                <button class="post-meme-btn">Post Meme</button>
-            </div>
-             <div class="active-status">
-                <span class="dot"></span> Active
+                <button id="post-meme-btn" class="post-meme-btn">Post Meme</button>
             </div>
         </section>
         
+        <!-- Feed -->
         <section id="feed-container">
             <h2>Feed</h2>
-            </section>
+            <!-- Posts will be dynamically loaded here by Firebase -->
+        </section>
 
     </main>
-
-    <script src="script.js"></script>
+    
+    <!-- Custom Modal -->
+    <div id="custom-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h4 id="modal-title">Are you sure?</h4>
+            <p id="modal-message">This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="modal-cancel-btn" class="action-btn modal-btn modal-btn-cancel">Cancel</button>
+                <button id="modal-confirm-btn" class="action-btn modal-btn modal-btn-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
