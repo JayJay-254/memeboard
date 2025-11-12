@@ -1,223 +1,37 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Get elements for Post a Meme card
-    const urlBtn = document.getElementById('url-btn');
-    const uploadBtn = document.getElementById('upload-btn');
-    const textBtn = document.getElementById('text-btn');
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            GoogleAuthProvider, 
+            signInWithPopup, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            query,
+            orderBy,
+            onSnapshot,
+            serverTimestamp,
+            doc,
+            deleteDoc,
+            updateDoc,
+            runTransaction
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import {
+            getStorage,
+            ref,
+            uploadBytes,
+            getDownloadURL,
+            deleteObject
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    const urlInputGroup = document.getElementById('url-input');
-    const uploadInputGroup = document.getElementById('upload-input');
-    const textInputGroup = document.getElementById('text-input');
-
-    const memeTitleInput = document.getElementById('meme-title');
-    const memeDescriptionInput = document.getElementById('meme-description');
-    const postMemeButton = document.querySelector('.post-meme-btn');
-    const imageUploadInput = document.getElementById('image-upload'); // For actual file input
-
-    const feedContainer = document.getElementById('feed-container');
-
-    let activePostType = 'url'; // Keep track of the currently active post type
-
-    // Function to activate a specific post type
-    function setActivePostType(type) {
-        // Deactivate all buttons and input groups
-        urlBtn.classList.remove('active');
-        uploadBtn.classList.remove('active');
-        textBtn.classList.remove('active');
-
-        urlInputGroup.classList.remove('active');
-        uploadInputGroup.classList.remove('active');
-        textInputGroup.classList.remove('active');
-
-        // Activate the selected type
-        if (type === 'url') {
-            urlBtn.classList.add('active');
-            urlInputGroup.classList.add('active');
-        } else if (type === 'upload') {
-            uploadBtn.classList.add('active');
-            uploadInputGroup.classList.add('active');
-        } else if (type === 'text') {
-            textBtn.classList.add('active');
-            textInputGroup.classList.add('active');
-        }
-        activePostType = type;
-    }
-
-    // Event listeners for the post type buttons
-    urlBtn.addEventListener('click', () => setActivePostType('url'));
-    uploadBtn.addEventListener('click', () => setActivePostType('upload'));
-    textBtn.addEventListener('click', () => setActivePostType('text'));
-
-    // Initialize the first active state (URL)
-    setActivePostType(activePostType);
-
-    // --- Post Meme Button Logic (Simplified for Front-End Mockup) ---
-    postMemeButton.addEventListener('click', async () => {
-        const title = memeTitleInput.value.trim();
-        const description = memeDescriptionInput.value.trim();
-        let content = ''; // This will hold the URL, or base64 data for upload, or text content
-
-        if (!title) {
-            alert('Please add a meme title!');
-            return;
-        }
-
-        if (activePostType === 'url') {
-            const urlInput = urlInputGroup.querySelector('input').value.trim();
-            if (!urlInput) {
-                alert('Please enter a URL for your meme!');
-                return;
-            }
-            content = urlInput;
-        } else if (activePostType === 'upload') {
-            const file = imageUploadInput.files[0];
-            if (!file) {
-                alert('Please select an image to upload!');
-                return;
-            }
-            // For a *real* app, you'd upload this to Firebase Storage and get a URL.
-            // For this mockup, we'll convert it to a Data URL for immediate display.
-            content = await readFileAsDataURL(file); // Utility function below
-            if (!content) {
-                alert('Could not read the image file.');
-                return;
-            }
-        } else if (activePostType === 'text') {
-            const textContent = textInputGroup.querySelector('textarea').value.trim();
-            if (!textContent) {
-                alert('Please write your text post!');
-                return;
-            }
-            content = textContent;
-        }
-
-        // Create the new post element and add to feed
-        createPostElement({
-            title: title,
-            description: description,
-            type: activePostType,
-            content: content, // This is the URL, Data URL, or text
-            author: "username", // Mock user
-            createdAt: new Date().toLocaleString(),
-            likeCount: 0
-        });
-
-        // Clear input fields after posting
-        memeTitleInput.value = '';
-        memeDescriptionInput.value = '';
-        urlInputGroup.querySelector('input').value = '';
-        if (imageUploadInput) imageUploadInput.value = ''; // Clear file input
-        textInputGroup.querySelector('textarea').value = '';
-    });
-
-    // Utility function to read file as Data URL (for local image preview)
-    function readFileAsDataURL(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }
-
-    // --- Create Post Element (Updated for new design) ---
-    function createPostElement(postData) {
-        const postDiv = document.createElement('div');
-        postDiv.className = 'post';
-
-        const postHeader = document.createElement('div');
-        postHeader.className = 'post-header';
-        postHeader.innerHTML = `
-            <span class="material-icons profile-avatar">person</span>
-            <div class="post-info">
-                <div class="post-author">${postData.author}</div>
-                <div class="post-time">${postData.createdAt}</div>
-            </div>
-        `;
-        postDiv.appendChild(postHeader);
-
-        const postContent = document.createElement('div');
-        postContent.className = 'post-content';
-
-        if (postData.title) {
-            const postTitle = document.createElement('h4');
-            postTitle.innerText = postData.title;
-            postContent.appendChild(postTitle);
-        }
-
-        if (postData.description) {
-            const postDescription = document.createElement('p');
-            postDescription.innerText = postData.description;
-            postContent.appendChild(postDescription);
-        }
-
-        if (postData.type === 'url' || postData.type === 'upload') {
-            const postImage = document.createElement('img');
-            postImage.src = postData.content;
-            postImage.alt = postData.title || 'Meme image';
-            postContent.appendChild(postImage);
-        } else if (postData.type === 'text') {
-            const postText = document.createElement('p');
-            postText.innerText = postData.content;
-            postContent.appendChild(postText);
-        }
-        
-        postDiv.appendChild(postContent);
-
-        const postFooter = document.createElement('div');
-        postFooter.className = 'post-footer';
-        
-        let currentLikes = postData.likeCount || 0;
-        const likeButton = document.createElement('button');
-        likeButton.className = 'like-btn';
-        likeButton.innerHTML = `<span class="material-icons">thumb_up</span> Like (${currentLikes})`;
-        likeButton.addEventListener('click', () => {
-            currentLikes++;
-            likeButton.innerHTML = `<span class="material-icons">thumb_up</span> Like (${currentLikes})`;
-            likeButton.classList.add('liked'); // Add a class to change color
-        });
-
-        const commentButton = document.createElement('button');
-        commentButton.innerHTML = `<span class="material-icons">chat_bubble_outline</span> Comment`;
-
-        const shareButton = document.createElement('button');
-        shareButton.innerHTML = `<span class="material-icons">share</span> Share`;
-
-        postFooter.appendChild(likeButton);
-        postFooter.appendChild(commentButton);
-        postFooter.appendChild(shareButton);
-        postDiv.appendChild(postFooter);
-
-        feedContainer.prepend(postDiv); // Add new posts to the top
-    }
-
-    // Example of a pre-existing post (optional, for initial view)
-    createPostElement({
-        title: "Inspiration for Your Day",
-        description: "Remember that every step forward, no matter how small, is progress. Keep going!",
-        type: "text",
-        content: "The only way to do great work is to love what you do.",
-        author: "MEMEBOARD Team",
-        createdAt: "2 days ago",
-        likeCount: 15
-    });
-
-    createPostElement({
-        title: "First Post Meme!",
-        description: "Testing out the new meme board functionality. Looks great!",
-        type: "url",
-        content: "https://i.imgflip.com/30b1gx.jpg", // Example meme URL
-        author: "jayjay",
-        createdAt: "1 hour ago",
-        likeCount: 5
-    });
-});
-
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
-
-
-  const firebaseConfig = {
+        // ------------------------------------------------------------------
+        // PASTE YOUR FIREBASE CONFIG HERE
+        // ------------------------------------------------------------------
+        // Get this from your Firebase project settings (Project Overview > Settings > General > Your apps)
+ const firebaseConfig = {
     apiKey: "AIzaSyDAvYWXCQPU03PpYmZfQFLN9vrbmuzZypk",
     authDomain: "meme-load.firebaseapp.com",
     projectId: "meme-load",
@@ -226,7 +40,409 @@ document.addEventListener('DOMContentLoaded', () => {
     appId: "1:491918831099:web:6037bf5028729a5a4f6f5e",
     measurementId: "G-P22L6VFPE3"
  };
+    
+        // ------------------------------------------------------------------
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Global state
+        let currentUserId = null;
+        let unsubscribeFeed = null; // To stop the listener when logged out
+
+        // Get UI Elements
+        const authWall = document.getElementById('auth-wall');
+        const appContent = document.getElementById('app-content');
+        const userProfileGuest = document.getElementById('user-profile-guest');
+        const userProfileAuthed = document.getElementById('user-profile-authed');
+        const userAvatar = document.getElementById('user-avatar');
+        const userName = document.getElementById('user-name');
+        const signInBtn = document.getElementById('sign-in-btn');
+        const authWallSignInBtn = document.getElementById('auth-wall-signin-btn');
+        const signOutBtn = document.getElementById('sign-out-btn');
+        const feedContainer = document.getElementById('feed-container');
+
+        // Post-Meme Card Elements
+        const postTypeButtons = {
+            url: document.getElementById('url-btn'),
+            upload: document.getElementById('upload-btn'),
+            text: document.getElementById('text-btn')
+        };
+        const postInputGroups = {
+            url: document.getElementById('url-input'),
+            upload: document.getElementById('upload-input'),
+            text: document.getElementById('text-input')
+        };
+        const postInputs = {
+            title: document.getElementById('meme-title'),
+            description: document.getElementById('meme-description'),
+            url: document.getElementById('url-input-field'),
+            upload: document.getElementById('image-upload-field'),
+            text: document.getElementById('text-input-field')
+        };
+        const postMemeButton = document.getElementById('post-meme-btn');
+        let activePostType = 'url';
+
+        // Modal Elements
+        const modal = document.getElementById('custom-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        let modalConfirmCallback = null;
+
+        // --- 1. Authentication Controller ---
+        
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                currentUserId = user.uid;
+                
+                // Update UI
+                authWall.style.display = 'none';
+                appContent.style.display = 'block';
+                userProfileGuest.style.display = 'none';
+                userProfileAuthed.style.display = 'flex';
+                
+                userAvatar.src = user.photoURL || `https://placehold.co/35x35/6c63ff/FFFFFF?text=${user.displayName.charAt(0)}`;
+                userName.textContent = user.displayName;
+
+                // Start listening to the feed
+                listenToFeed();
+
+            } else {
+                // User is signed out
+                currentUserId = null;
+
+                // Update UI
+                authWall.style.display = 'flex';
+                appContent.style.display = 'none';
+                userProfileGuest.style.display = 'flex';
+                userProfileAuthed.style.display = 'none';
+
+                // Stop listening to the feed
+                if (unsubscribeFeed) {
+                    unsubscribeFeed();
+                }
+                feedContainer.innerHTML = '<h2>Feed</h2><p style="color: var(--text-medium); text-align: center;">Sign in to see the feed.</p>';
+            }
+        });
+
+        // --- 2. Sign-In / Sign-Out Logic ---
+
+        const provider = new GoogleAuthProvider();
+
+        const handleSignIn = () => {
+            signInWithPopup(auth, provider).catch((error) => {
+                console.error("Sign-in error", error);
+                showModalAlert("Sign-In Failed", error.message);
+            });
+        };
+
+        const handleSignOut = () => {
+            signOut(auth).catch((error) => {
+                console.error("Sign-out error", error);
+            });
+        };
+
+        signInBtn.addEventListener('click', handleSignIn);
+        authWallSignInBtn.addEventListener('click', handleSignIn);
+        signOutBtn.addEventListener('click', handleSignOut);
+
+        // --- 3. Post-Meme Card Logic ---
+
+        // Switch between URL, Upload, Text
+        Object.keys(postTypeButtons).forEach(type => {
+            postTypeButtons[type].addEventListener('click', () => {
+                // Deactivate all
+                Object.values(postTypeButtons).forEach(btn => btn.classList.remove('active'));
+                Object.values(postInputGroups).forEach(group => group.classList.remove('active'));
+                
+                // Activate selected
+                postTypeButtons[type].classList.add('active');
+                postInputGroups[type].classList.add('active');
+                activePostType = type;
+            });
+        });
+
+        // Handle Post Button Click
+        postMemeButton.addEventListener('click', async () => {
+            if (!currentUserId) {
+                showModalAlert("Not Signed In", "You must be signed in to post.");
+                return;
+            }
+
+            const title = postInputs.title.value.trim();
+            if (!title) {
+                showModalAlert("Missing Title", "Please enter a meme title.");
+                return;
+            }
+
+            // Disable button to prevent double-posting
+            postMemeButton.disabled = true;
+            postMemeButton.textContent = 'Posting...';
+
+            try {
+                // This object will be saved to Firestore
+                const postData = {
+                    title: title,
+                    description: postInputs.description.value.trim(),
+                    type: activePostType,
+                    authorId: currentUserId,
+                    authorName: auth.currentUser.displayName,
+                    authorAvatar: auth.currentUser.photoURL,
+                    createdAt: serverTimestamp(),
+                    likeCount: 0,
+                    likes: {} // Use a map to track who liked
+                };
+
+                // Add content based on type
+                if (activePostType === 'url') {
+                    const url = postInputs.url.value.trim();
+                    if (!url) throw new Error("Please enter an image URL.");
+                    postData.imageUrl = url;
+                } 
+                else if (activePostType === 'upload') {
+                    const file = postInputs.upload.files[0];
+                    if (!file) throw new Error("Please select an image to upload.");
+
+                    // 1. Create storage reference
+                    const storageRef = ref(storage, `memes/${currentUserId}/${Date.now()}-${file.name}`);
+                    
+                    // 2. Upload file
+                    const snapshot = await uploadBytes(storageRef, file);
+
+                    // 3. Get download URL
+                    const downloadURL = await getDownloadURL(snapshot.ref);
+                    postData.imageUrl = downloadURL;
+                }
+                else if (activePostType === 'text') {
+                    const text = postInputs.text.value.trim();
+                    if (!text) throw new Error("Please enter some text for your post.");
+                    postData.textContent = text;
+                }
+
+                // 4. Save post document to Firestore
+                await addDoc(collection(db, "posts"), postData);
+
+                // 5. Clear fields
+                postInputs.title.value = '';
+                postInputs.description.value = '';
+                postInputs.url.value = '';
+                postInputs.upload.value = '';
+                postInputs.text.value = '';
+
+            } catch (error) {
+                console.error("Error posting meme: ", error);
+                showModalAlert("Post Failed", error.message);
+            } finally {
+                // Re-enable button
+                postMemeButton.disabled = false;
+                postMemeButton.textContent = 'Post Meme';
+            }
+        });
+
+
+        // --- 4. Feed Logic (Listen, Render, Delete, Like) ---
+
+        function listenToFeed() {
+            // Stop any previous listener
+            if (unsubscribeFeed) {
+                unsubscribeFeed();
+            }
+
+            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+            
+            unsubscribeFeed = onSnapshot(q, (snapshot) => {
+                feedContainer.innerHTML = '<h2>Feed</h2>'; // Clear feed
+                if (snapshot.empty) {
+                    feedContainer.innerHTML += '<p style="color: var(--text-medium); text-align: center;">No memes yet. Be the first to post!</p>';
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    renderPost(doc.id, doc.data());
+                });
+            }, (error) => {
+                console.error("Error listening to feed: ", error);
+                feedContainer.innerHTML = '<h2>Feed</h2><p style="color: var(--red-dot); text-align: center;">Error loading feed.</p>';
+            });
+        }
+
+        function renderPost(id, data) {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            postDiv.dataset.id = id;
+
+            const time = data.createdAt ? data.createdAt.toDate().toLocaleString() : 'Just now';
+
+            // Post Header
+            const postHeader = document.createElement('div');
+            postHeader.className = 'post-header';
+            postHeader.innerHTML = `
+                <img src="${data.authorAvatar || 'https://placehold.co/40x40/6c63ff/FFFFFF?text=U'}" alt="${data.authorName}" class="profile-avatar">
+                <div class="post-info">
+                    <div class="post-author">${data.authorName}</div>
+                    <div class="post-time">${time}</div>
+                </div>
+            `;
+            
+            // Add Delete Button (if author matches)
+            if (data.authorId === currentUserId) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-post-btn visible';
+                deleteBtn.innerHTML = '<span class="material-icons">delete_outline</span>';
+                deleteBtn.addEventListener('click', () => {
+                    showModalConfirm(
+                        "Delete Meme?",
+                        "Are you sure you want to delete this post? This cannot be undone.",
+                        () => handleDeletePost(id, data.imageUrl, data.type)
+                    );
+                });
+                postHeader.appendChild(deleteBtn);
+            }
+            postDiv.appendChild(postHeader);
+
+            // Post Content
+            const postContent = document.createElement('div');
+            postContent.className = 'post-content';
+            
+            if (data.title) postContent.innerHTML += `<h4>${data.title}</h4>`;
+            if (data.description) postContent.innerHTML += `<p>${data.description}</p>`;
+            if (data.imageUrl) {
+                postContent.innerHTML += `<img src="${data.imageUrl}" alt="${data.title}" onerror="this.style.display='none'">`;
+            }
+            if (data.textContent) {
+                postContent.innerHTML += `<p style="font-size: 1.2em; white-space: pre-wrap;">${data.textContent}</p>`;
+            }
+            postDiv.appendChild(postContent);
+
+            // Post Footer (Like, Comment, Share)
+            const postFooter = document.createElement('div');
+            postFooter.className = 'post-footer';
+
+            const likeButton = document.createElement('button');
+            likeButton.className = 'like-btn';
+            likeButton.innerHTML = `<span class="material-icons">thumb_up</span> Like (${data.likeCount || 0})`;
+            
+            // Check if current user has liked this post
+            if (data.likes && data.likes[currentUserId]) {
+                likeButton.classList.add('liked');
+            }
+            
+            likeButton.addEventListener('click', () => handleLikePost(id));
+
+            postFooter.innerHTML = `
+                <button class="comment-btn"><span class="material-icons">chat_bubble_outline</span> Comment</button>
+                <button class="share-btn"><span class="material-icons">share</span> Share</button>
+            `;
+            postFooter.prepend(likeButton); // Add like button first
+            postDiv.appendChild(postFooter);
+
+            feedContainer.appendChild(postDiv);
+        }
+
+        async function handleDeletePost(id, imageUrl, type) {
+            if (!currentUserId) return;
+
+            try {
+                // 1. Delete Firestore document
+                await deleteDoc(doc(db, "posts", id));
+                
+                // 2. If it was an 'upload' post, delete the file from Storage
+                if (type === 'upload' && imageUrl) {
+                    const imageRef = ref(storage, imageUrl); // Get ref from URL
+                    await deleteObject(imageRef);
+                }
+                
+                // UI will update automatically via onSnapshot
+                
+            } catch (error) {
+                console.error("Error deleting post: ", error);
+                showModalAlert("Delete Failed", error.message);
+            }
+        }
+
+        async function handleLikePost(id) {
+            if (!currentUserId) return;
+
+            const postRef = doc(db, "posts", id);
+            
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const postDoc = await transaction.get(postRef);
+                    if (!postDoc.exists()) {
+                        throw "Post does not exist!";
+                    }
+
+                    const data = postDoc.data();
+                    let newLikeCount = data.likeCount || 0;
+                    const newLikes = data.likes || {};
+                    
+                    if (newLikes[currentUserId]) {
+                        // User already liked, so "unlike"
+                        newLikeCount--;
+                        delete newLikes[currentUserId];
+                    } else {
+                        // User has not liked, so "like"
+                        newLikeCount++;
+                        newLikes[currentUserId] = true;
+                    }
+
+                    transaction.update(postRef, { 
+                        likeCount: newLikeCount,
+                        likes: newLikes
+                    });
+                });
+            } catch (error) {
+                console.error("Error liking post: ", error);
+            }
+            // UI will update automatically via onSnapshot
+        }
+
+
+        // --- 5. Custom Modal Utilities ---
+
+        function showModalAlert(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalConfirmBtn.style.display = 'none'; // Hide confirm button
+            modalCancelBtn.textContent = 'Close';
+            modal.style.display = 'flex';
+            
+            modalConfirmCallback = null;
+        }
+
+        function showModalConfirm(title, message, onConfirm) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalConfirmBtn.style.display = 'inline-block';
+            modalConfirmBtn.textContent = 'Delete'; // or "Confirm"
+            modalCancelBtn.textContent = 'Cancel';
+            modal.style.display = 'flex';
+
+            modalConfirmCallback = onConfirm;
+        }
+
+        function hideModal() {
+            modal.style.display = 'none';
+            modalConfirmCallback = null;
+        }
+
+        modalCancelBtn.addEventListener('click', hideModal);
+        
+        modalConfirmBtn.addEventListener('click', () => {
+            if (modalConfirmCallback) {
+                modalConfirmCallback();
+            }
+            hideModal();
+        });
+
+        // Close modal if clicking overlay
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
